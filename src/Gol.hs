@@ -1,3 +1,5 @@
+module Gol where
+
 import Data.List (nub)
 
 data Cell = Coord Integer Integer deriving (Eq, Show)
@@ -18,11 +20,11 @@ neighbours (Coord x y) = [
 
 numberOfNeighbours :: World -> Cell -> Int
 numberOfNeighbours world cell =
-  length $ filter (\x -> x `elem` (neighbours cell)) world
+  length $ filter (\x -> x `elem` neighbours cell) world
 
 potentialPlacesForNewCells :: World -> Cell -> [Cell]
 potentialPlacesForNewCells world cell =
-  filter (\x -> x `notElem` world) (neighbours cell)
+  filter (`notElem` world) (neighbours cell)
 
 nextStateForLivingCell :: World -> Cell -> Maybe Cell
 nextStateForLivingCell world cell =
@@ -44,7 +46,7 @@ tick world =
             Nothing -> w) [] nextCells
   where
     potentialCells = nub (concatMap (potentialPlacesForNewCells world) world)
-    nextCells = (map (nextStateForLivingCell world) world) ++ (map (nextStateForPotentialCell world) potentialCells)
+    nextCells = map (nextStateForLivingCell world) world ++ map (nextStateForPotentialCell world) potentialCells
 
 --- seeds for testing
 
